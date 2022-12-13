@@ -21,30 +21,32 @@ class Ghost {
         this.imageY = imageY;
         this.imageHeight = imageHeight;
         this.imageWidth = imageWidth;
-        this.range = range;    
+        this.range = range;
+        this.randomTargetIndex = parseInt(
+            Math.random() * randomTargetForGhosts.length
+        );
+        setInterval (() => {
+            this.changeRandomDirection()
+        }, 10000);    
 
     }
 
+    changeRandomDirection() {
+        this.randomTargetIndex += 1;
+        this.randomTargetIndex = this.randomTargetIndex % 4;
+    }
+
     moveProcess() {
+        if (this.isInRangeOfPacman()) {
+            this.target = pacman;
+        } else {
+            this.target = randomTargetForGhosts[this.randomTargetIndex];
+        }
         this.changeDirectionIfPossible();
         this.moveForwards();
         if(this.checkCollision()) {
             this.moveBackwards();
-        }
-    }
-
-    eat() {
-        for(let i = 0; i < map.length; i++) {
-            for(let j = 0 ; j < map[0].length; j++) {
-                if(
-                    map[i][j] == 2 &&
-                    this.getMapX() == j &&
-                    this.getMapY() == i 
-                ) {
-                    map[i][j] = 3
-                    score++;
-                }
-            }
+            return;
         }
     }
 
@@ -95,22 +97,118 @@ class Ghost {
         return false;
     }
 
-    checkGhostCollision() {
+    isInRangeOfPacman() {
+        let xDistance = Math.abs(pacman.getMapX() - this.getMapX());
+        let yDistance = Math.abs(pacman.getMapY() - this.getMapY());
+        if(
+            Math.sqrt(xDistance * xDistance + yDistance + yDistance) <=
+            this.range
+        ) {
+            return true;
+        }
 
+        return false;
     }
+   
 
     changeDirectionIfPossible() {
-        if(this.direction == this.nextDirection) return
-
         let tempDirection = this.direction
-        this.direction = this.nextDirection
-        this.moveForwards()
+
+        this.direction = this.calculateNewDirection(
+            map,
+            perseInt(this.getMapXRightSide.x / oneBlockSize),
+            perseInt(this.getMapXRightSide.y / oneBlockSize)
+        );
+
+        if(typeof this.direction == "undefined") {
+            this.direction = tempDirection
+            return;
+        }
+
+        if(this)
+
+        this.moveForwards();
         if(this.checkCollision()) {
             this.moveBackwards();
             this.direction = tempDirection;
         } else {
             this.moveBackwards();
         }
+    }
+
+    calculateNewDirection(map, destX, destY) {
+        let mp = [];
+        for (let i = 0; 1 < map.length; i++) {
+            mp[i] = map[i].slice();
+        }
+
+        let queue = [
+            {
+                x: this.getMapX(),
+                y: this.getMapY(),
+                move: [],
+            }
+        ];
+
+        while(queue.length > 0) {
+            let poped = queue.shift()
+            if(poped.x == destX && poped.y == destY) {
+                return poped.move[0]
+            } else {
+                mp [poped.y][poped.x] = 1
+                let neghborList = this.addNeghbors(poped, mp);
+                for(let i = 0; i < neghborList.length; i++) {
+                    queue.push(neghborList[i]);
+                }
+            }
+        }
+
+        return DIRECTION_UP;
+    }
+
+    addNeghbors(poped, mp) {
+        let queue = [];
+        let numOfRows = mp.length;
+        let numOfColumns = mp[0].length;
+
+        if (
+            poped.x - 1 >= 0 &&
+            poped.x - 1 < numOfRows &&
+            mp[poped.y][poped.x - 1] != 1
+        ) {
+            let tempMoves = poped.move.slice();
+            tempMoves.pust(DIRECTION_LEFT);
+            queue.push({ x: poped.x - 1, y:poped.y, moves: tempMoves});
+        }
+        if (
+            poped.x + 1 >= 0 &&
+            poped.x + 1 < numOfRows &&
+            mp[poped.y][poped.x + 1] != 1
+        ) {
+            let tempMoves = poped.move.slice();
+            tempMoves.pust(DIRECTION_RIGHT);
+            queue.push({ x: poped.x + 1, y:poped.y, moves: tempMoves});
+        }
+        if (
+            poped.x - 1 >= 0 &&
+            poped.x - 1 < numOfRows &&
+            mp[poped.y - 1][poped.x] != 1
+        ) {
+            let tempMoves = poped.move.slice();
+            tempMoves.pust(DIRECTION_UP);
+            queue.push({ x: poped.x, y:poped.y - 1, moves: tempMoves});
+        }
+        if (
+            poped.x + 1 >= 0 &&
+            poped.x + 1 < numOfRows &&
+            mp[poped.y + 1][poped.x] != 1
+        ) {
+            let tempMoves = poped.move.slice();
+            tempMoves.pust(DIRECTION_BOTTOM);
+            queue.push({ x: poped.x, y:poped.y + 1, moves: tempMoves});
+        }
+
+        return queue;
     }
 
     changeAnimation () {
@@ -124,8 +222,8 @@ class Ghost {
             ghostFrames,
             this.imageX,
             this.imageY,
-            this.imageHeight,
             this.imageWidth,
+            this.imageHeight,
             this.x,
             this.y, 
             this.width,
