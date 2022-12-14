@@ -58,7 +58,7 @@ let map = [
 ];
 
 let randomTargetForGhosts = [
-    { x: 1 * oneBlockSize, y: 1* oneBlockSize},
+    {x: 1 * oneBlockSize, y: 1 * oneBlockSize},
     {x: 1 * oneBlockSize, y: (map.length - 2) * oneBlockSize},
     {x: (map[0].length - 2) * oneBlockSize, y: oneBlockSize},
     {
@@ -76,7 +76,9 @@ let gameLoop = () => {
 let update = () => {
     pacman.moveProcess()
     pacman.eat();
-    
+    for (let i = 0; i < ghostCount.length; i++) {
+        ghosts[i].moveProcess()
+    }
 
 };
 
@@ -191,8 +193,8 @@ let createGhosts = () => {
     ghosts=[]
     for(let i = 0 ; i < ghostCount ; i++) {
         let newGhost = new Ghost(
-            9 * oneBlockSize + (i %2 == 0? 0 : 1) * oneBlockSize,
-            10 * oneBlockSize + (i %2 == 0? 0 : 1) * oneBlockSize,
+            9 * oneBlockSize + (i %2 == 0 ? 0 : 1) * oneBlockSize,
+            10 * oneBlockSize + (i %2 == 0 ? 0 : 1) * oneBlockSize,
             oneBlockSize,
             oneBlockSize,
             pacman.speed/2,

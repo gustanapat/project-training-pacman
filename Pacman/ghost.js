@@ -101,7 +101,7 @@ class Ghost {
         let xDistance = Math.abs(pacman.getMapX() - this.getMapX());
         let yDistance = Math.abs(pacman.getMapY() - this.getMapY());
         if(
-            Math.sqrt(xDistance * xDistance + yDistance + yDistance) <=
+            Math.sqrt(xDistance * xDistance + yDistance * yDistance) <=
             this.range
         ) {
             return true;
@@ -112,12 +112,12 @@ class Ghost {
    
 
     changeDirectionIfPossible() {
-        let tempDirection = this.direction
+        let tempDirection = this.direction;
 
         this.direction = this.calculateNewDirection(
             map,
-            perseInt(this.getMapXRightSide.x / oneBlockSize),
-            perseInt(this.getMapXRightSide.y / oneBlockSize)
+            perseInt(this.target.x / oneBlockSize),
+            perseInt(this.target.y / oneBlockSize)
         );
 
         if(typeof this.direction == "undefined") {
@@ -138,7 +138,7 @@ class Ghost {
 
     calculateNewDirection(map, destX, destY) {
         let mp = [];
-        for (let i = 0; 1 < map.length; i++) {
+        for (let i = 0; i < map.length; i++) {
             mp[i] = map[i].slice();
         }
 
@@ -153,7 +153,7 @@ class Ghost {
         while(queue.length > 0) {
             let poped = queue.shift()
             if(poped.x == destX && poped.y == destY) {
-                return poped.move[0]
+                return poped.moves[0]
             } else {
                 mp [poped.y][poped.x] = 1
                 let neghborList = this.addNeghbors(poped, mp);
@@ -168,8 +168,8 @@ class Ghost {
 
     addNeghbors(poped, mp) {
         let queue = [];
-        let numOfRows = mp.length;
-        let numOfColumns = mp[0].length;
+        let numOfRows = mp.length
+        let numOfColumns = mp[0].length
 
         if (
             poped.x - 1 >= 0 &&
