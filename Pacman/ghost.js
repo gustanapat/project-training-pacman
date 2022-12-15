@@ -23,11 +23,11 @@ class Ghost {
         this.imageWidth = imageWidth;
         this.range = range;
         this.randomTargetIndex = parseInt(
-            Math.random() * randomTargetForGhosts.length
+            Math.random() * randomTargetsForGhosts.length
         );
-        setInterval (() => {
+        setInterval(()=>{
             this.changeRandomDirection()
-        }, 10000);    
+        }, 10000)
 
     }
 
@@ -40,7 +40,7 @@ class Ghost {
         if (this.isInRangeOfPacman()) {
             this.target = pacman;
         } else {
-            this.target = randomTargetForGhosts[this.randomTargetIndex];
+            this.target = randomTargetsForGhosts[this.randomTargetIndex];
         }
         this.changeDirectionIfPossible();
         this.moveForwards();
@@ -94,7 +94,7 @@ class Ghost {
         ) {
             return true
         }
-        return false;
+        return isCollided;
     }
 
     isInRangeOfPacman() {
@@ -121,7 +121,7 @@ class Ghost {
         );
 
         if(typeof this.direction == "undefined") {
-            this.direction = tempDirection
+            this.direction = tempDirection;
             return;
         }
 
@@ -156,14 +156,14 @@ class Ghost {
                 return poped.moves[0]
             } else {
                 mp [poped.y][poped.x] = 1
-                let neghborList = this.addNeghbors(poped, mp);
-                for(let i = 0; i < neghborList.length; i++) {
-                    queue.push(neghborList[i]);
+                let neighborList = this.addNeighbors(poped, mp);
+                for(let i = 0; i < neighborList.length; i++) {
+                    queue.push(neighborList[i]);
                 }
             }
         }
 
-        return DIRECTION_UP;
+        return 1;
     }
 
     addNeghbors(poped, mp) {
