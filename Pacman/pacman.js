@@ -12,7 +12,7 @@ class Pacman {
 
         setInterval(() =>{
             this.changeAnimation();
-        }, 10000);
+        }, 100);
     }
 
     moveProcess() {
@@ -20,6 +20,7 @@ class Pacman {
         this.moveForwards();
         if(this.checkCollision()) {
             this.moveBackwards();
+            return;
         }
     }
 
@@ -90,7 +91,7 @@ class Pacman {
     }
 
     changeDirectionIfPossible() {
-        if(this.direction == this.nextDirection) return
+        if(this.direction == this.nextDirection) return;
 
         let tempDirection = this.direction
         this.direction = this.nextDirection
