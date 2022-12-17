@@ -116,16 +116,15 @@ class Ghost {
 
         this.direction = this.calculateNewDirection(
             map,
-            perseInt(this.target.x / oneBlockSize),
-            perseInt(this.target.y / oneBlockSize)
+            parseInt(this.target.x / oneBlockSize),
+            parseInt(this.target.y / oneBlockSize)
         );
 
         if(typeof this.direction == "undefined") {
-            this.direction = tempDirection;
-            return;
+            this.direction = tempDirection
+            return
         }
 
-        if(this)
 
         this.moveForwards();
         if(this.checkCollision()) {
@@ -147,15 +146,15 @@ class Ghost {
                 x: this.getMapX(),
                 y: this.getMapY(),
                 move: [],
-            }
+            },
         ];
 
-        while(queue.length > 0) {
+        while (queue.length > 0) {
             let poped = queue.shift()
             if(poped.x == destX && poped.y == destY) {
-                return poped.moves[0]
+                return poped.moves[0];
             } else {
-                mp [poped.y][poped.x] = 1
+                mp[poped.y][poped.x] = 1
                 let neighborList = this.addNeighbors(poped, mp);
                 for(let i = 0; i < neighborList.length; i++) {
                     queue.push(neighborList[i]);
@@ -163,10 +162,10 @@ class Ghost {
             }
         }
 
-        return 1;
+        return DIRECTION_UP;
     }
 
-    addNeghbors(poped, mp) {
+    addNeighbors(poped, mp) {
         let queue = [];
         let numOfRows = mp.length
         let numOfColumns = mp[0].length
@@ -176,7 +175,7 @@ class Ghost {
             poped.x - 1 < numOfRows &&
             mp[poped.y][poped.x - 1] != 1
         ) {
-            let tempMoves = poped.move.slice();
+            let tempMoves = poped.moves.slice();
             tempMoves.pust(DIRECTION_LEFT);
             queue.push({ x: poped.x - 1, y:poped.y, moves: tempMoves});
         }
@@ -185,25 +184,25 @@ class Ghost {
             poped.x + 1 < numOfRows &&
             mp[poped.y][poped.x + 1] != 1
         ) {
-            let tempMoves = poped.move.slice();
-            tempMoves.pust(DIRECTION_RIGHT);
-            queue.push({ x: poped.x + 1, y:poped.y, moves: tempMoves});
+            let tempMoves = poped.moves.slice();
+            tempMoves.push(DIRECTION_RIGHT);
+            queue.push({ x: poped.x + 1, y: poped.y, moves: tempMoves });
         }
         if (
-            poped.x - 1 >= 0 &&
-            poped.x - 1 < numOfRows &&
+            poped.y - 1 >= 0 &&
+            poped.y - 1 < numOfRows &&
             mp[poped.y - 1][poped.x] != 1
         ) {
-            let tempMoves = poped.move.slice();
+            let tempMoves = poped.moves.slice();
             tempMoves.pust(DIRECTION_UP);
             queue.push({ x: poped.x, y:poped.y - 1, moves: tempMoves});
         }
         if (
-            poped.x + 1 >= 0 &&
-            poped.x + 1 < numOfRows &&
+            poped.y + 1 >= 0 &&
+            poped.y + 1 < numOfRows &&
             mp[poped.y + 1][poped.x] != 1
         ) {
-            let tempMoves = poped.move.slice();
+            let tempMoves = poped.moves.slice();
             tempMoves.pust(DIRECTION_BOTTOM);
             queue.push({ x: poped.x, y:poped.y + 1, moves: tempMoves});
         }
@@ -249,3 +248,5 @@ class Ghost {
         return parseInt((this.y + 0.9999 * oneBlockSize) / oneBlockSize)
     }
 }
+
+

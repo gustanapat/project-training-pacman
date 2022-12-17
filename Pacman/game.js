@@ -77,7 +77,7 @@ let gameLoop = () => {
 let update = () => {
     pacman.moveProcess()
     pacman.eat();
-    for (let i = 0; i < ghostCount.length; i++) {
+    for (let i = 0; i < ghosts.length; i++) {
         ghosts[i].moveProcess()
     }
 
@@ -228,3 +228,6 @@ window.addEventListener("keydown", (event) => {
         }    
     }, 1);
 });
+
+
+
